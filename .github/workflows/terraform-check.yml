@@ -1,0 +1,43 @@
+name: Revisión de Terraform (CI)
+
+# Se activa cuando haces push a la rama main o pull requests
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  terraform-check:
+    name: Validar Código
+    runs-on: ubuntu-latest
+    
+    # Usamos bash como terminal por defecto
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # 1. Descargar el código del repositorio
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    # 2. Instalar Terraform en el servidor de GitHub
+    - name: Instalar Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.5.0" # O la versión que estés usando
+
+    # 3. Inicializar (Descargar plugins de AWS)
+    # Usamos -backend=false porque no tenemos S3 configurado
+    - name: Terraform Init
+      run: terraform init -backend=false
+
+    # 4. Verificar formato (Estilo)
+    # Si el código está desordenado, esto fallará
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    # 5. Validar sintaxis (Lógica)
+    # Revisa si escribiste mal algún recurso o variable
+    - name: Terraform Validate
+      run: terraform validate

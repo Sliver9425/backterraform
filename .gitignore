@@ -1,0 +1,7 @@
+# Archivos de sistema y carpetas ocultas de Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Archivos de estado (¡MUY IMPORTANTE NO SUBIR ESTOS POR SEGURIDAD!)
+*.tfstate
+*.tfstate.backup
